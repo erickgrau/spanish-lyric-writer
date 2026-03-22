@@ -1,0 +1,13 @@
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+:root {
+  --deep-teal: #004F71;
+  --bright-teal: #00B398;
+  --amber: #F2A900;
+  --warm-cream: #F1E6B2;
+  --gray-dark: #626365;
+  --gray-mid: #939597;
+  --gray-light: #BBBDBF;
+  --white: #ffffff;
+}
