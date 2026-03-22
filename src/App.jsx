@@ -9,8 +9,6 @@ export default function App() {
   const [musicStyle, setMusicStyle] = useState('hiphop_jc')
   const [startSection, setStartSection] = useState('verse1')
   const [lang, setLang] = useState('spanglish')
-  const [apiKey, setApiKey] = useState('')
-  const [showKey, setShowKey] = useState(false)
   const [sections, setSections] = useState([])
   const [busy, setBusy] = useState(false)
   const [busySection, setBusySection] = useState(null)
@@ -21,7 +19,6 @@ export default function App() {
 
   const handleGenerate = useCallback(async () => {
     if (!idea.trim()) { setError('Enter your idea first.'); return }
-    if (!apiKey.trim()) { setError('Enter your Anthropic API key first.'); return }
     setError('')
     setBusy(true)
     setSections([])
@@ -29,17 +26,15 @@ export default function App() {
       const result = await generateSection({
         idea, styleGuide, langGuide,
         sectionLabel: SECTION_LABELS[startSection],
-        apiKey,
       })
       setSections([{ type: startSection, ...result }])
     } catch (e) {
       setError(e.message)
     }
     setBusy(false)
-  }, [idea, styleGuide, langGuide, startSection, apiKey])
+  }, [idea, styleGuide, langGuide, startSection])
 
   const handleAddSection = useCallback(async (type) => {
-    if (!apiKey.trim()) { setError('Enter your Anthropic API key first.'); return }
     setError('')
     setBusySection(type)
     try {
@@ -47,29 +42,27 @@ export default function App() {
         idea, styleGuide, langGuide,
         sectionLabel: SECTION_LABELS[type],
         existingSections: sections,
-        apiKey,
       })
       setSections((prev) => [...prev, { type, ...result }])
     } catch (e) {
       setError(e.message)
     }
     setBusySection(null)
-  }, [idea, styleGuide, langGuide, sections, apiKey])
+  }, [idea, styleGuide, langGuide, sections])
 
   const handleFullSong = useCallback(async () => {
     if (!idea.trim()) { setError('Enter your idea first.'); return }
-    if (!apiKey.trim()) { setError('Enter your Anthropic API key first.'); return }
     setError('')
     setBusy(true)
     setSections([])
     try {
-      const result = await generateFullSong({ idea, styleGuide, langGuide, apiKey })
+      const result = await generateFullSong({ idea, styleGuide, langGuide })
       setSections(result.sections)
     } catch (e) {
       setError(e.message)
     }
     setBusy(false)
-  }, [idea, styleGuide, langGuide, apiKey])
+  }, [idea, styleGuide, langGuide])
 
   const isBusy = busy || busySection !== null
 
@@ -83,24 +76,6 @@ export default function App() {
         </header>
 
         <div className={styles.form}>
-
-          {/* API Key */}
-          <div className={styles.field}>
-            <label className={styles.label}>Anthropic API Key</label>
-            <div className={styles.keyRow}>
-              <input
-                type={showKey ? 'text' : 'password'}
-                className={styles.input}
-                placeholder="sk-ant-..."
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-              />
-              <button className={styles.toggleBtn} onClick={() => setShowKey((v) => !v)}>
-                {showKey ? 'Hide' : 'Show'}
-              </button>
-            </div>
-            <p className={styles.hint}>Your key stays in your browser. Never sent anywhere except Anthropic's API.</p>
-          </div>
 
           {/* Idea */}
           <div className={styles.field}>
