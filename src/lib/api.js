@@ -24,6 +24,14 @@ Respond ONLY with raw JSON, no markdown, no backticks:
 {"sections":[{"type":"section_key","lyrics":"lines with \\n","translation":"2-sentence English summary","rhyme_note":"one line on rhyme"}]}
 Valid section keys: intro, verse1, verse2, verse3, chorus, bridge, outro`
 
+const SYS_POLISH = `You are a professional Spanish-language songwriter and editor. The user has written Spanish lyrics. Your job is to polish them — improve rhythm, fix rhyme schemes, tighten the flow — while keeping their voice and intent.
+Respond ONLY with raw JSON, no markdown, no backticks:
+{"lyrics":"polished lines separated by \\n","translation":"natural 2-sentence English summary","rhyme_note":"one line describing what you changed and why","changes":"brief description of edits made"}`
+
+const SYS_TRANSLATE = `You are a professional Spanish-English translator specializing in song lyrics. Translate the given Spanish lyrics into natural, poetic English that captures the feeling and meaning.
+Respond ONLY with raw JSON, no markdown, no backticks:
+{"translation":"full English translation line by line, separated by \\n","summary":"2-sentence summary of the song's meaning"}`
+
 export async function generateSection({ idea, styleGuide, langGuide, sectionLabel }) {
   const userPrompt = `Idea: "${idea}"
 Style: ${styleGuide}
@@ -61,4 +69,25 @@ Write a complete song: intro, verse1, chorus, verse2, chorus, bridge, verse3, ch
 Each section 6-8 lines. Rhymes tight in Spanish. Consistent voice and story throughout.`
 
   return callEdgeFunction(SYS_FULL, userPrompt)
+}
+
+export async function polishLyrics({ lyrics, styleGuide, langGuide, sectionLabel }) {
+  const userPrompt = `Style: ${styleGuide}
+Language: ${langGuide}
+Section: ${sectionLabel}
+
+Here are the user's original lyrics:
+${lyrics}
+
+Polish these lyrics — improve rhythm, tighten rhyme schemes, keep their voice. Show what you changed.`
+
+  return callEdgeFunction(SYS_POLISH, userPrompt)
+}
+
+export async function translateLyrics({ lyrics }) {
+  const userPrompt = `Translate these Spanish lyrics to English:
+
+${lyrics}`
+
+  return callEdgeFunction(SYS_TRANSLATE, userPrompt)
 }

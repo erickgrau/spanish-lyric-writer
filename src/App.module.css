@@ -223,3 +223,14 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+.studioAddRow {
+  padding-top: 0.25rem;
+}
+
+.studioAddLabel {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin-bottom: 10px;
+  font-weight: 500;
+}
